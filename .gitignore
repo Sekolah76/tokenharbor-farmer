@@ -10,3 +10,5 @@ supabase_config.json
 th_accounts.json
 *.log
 state.json
+accounts_full.txt
+api_keys.txt

@@ -144,6 +144,9 @@ python fix_th_model_locks.py
 
 # (Jika conn baru tidak muncul di UI 9router — provider beda) fix provider:
 python fix_th_provider.py
+
+# 📤 Export akun ke 2 file (email+pw+key & key only):
+python th_export.py
 ```
 
 ### 6. Verifikasi
@@ -196,6 +199,7 @@ python /path/to/th_auto_register.py single # agent 1 akun
 tokenharbor-farmer/
 ├── th_tui.py               # 🎨 Rich TUI menu (klik 1/2/3 visual)
 ├── th_preflight.py         # ✅ Pre-flight check (deps, Tor, DB, state)
+├── th_export.py            # 📤 Export akun → accounts_full.txt + api_keys.txt
 ├── th_tor_farm.py          # Farm massal (resume, auto-rotate, inject)
 ├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router

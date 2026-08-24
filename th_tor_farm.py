@@ -6,15 +6,41 @@ Loop: signup via Tor → verify email (temp mail) → consent free models → cr
 
 Usage: python th_tor_farm.py [jumlah] [--no-inject]
 """
-import requests, re, sys, os, time, uuid, random, string, json, sqlite3, socket
+import requests, re, sys, os, time, uuid, random, string, json, sqlite3, socket, urllib.parse
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import th_farm_pro as m  # reuse make_signup_body, UA, dll
+# --- Konstanta (mandiri — tidak butuh file lain) ---
+BASE = "https://tokenharbor.ai"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36"
+ACTION_ID = "6003703e71fc5dc99543154237e9a9267997419301"
+ACTION_KEY = "kb59e6b88b9f36883e58e38e7e48870c6"
+NEXT_ACTION = "607ec2c1a962aa81ad67a2483c54b0cfadfda875b2"
+ROUTER = urllib.parse.quote('["",{"children":["login",{"children":["__PAGE__",{},null,null,0]},null,null,0]},null,null,20]')
+
+def make_signup_body(email, pwd):
+    fp = str(uuid.uuid4())
+    bd = "----WebKitFormBoundary" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+    parts = []
+    def af(n, v=""):
+        parts.append(f'--{bd}\r\nContent-Disposition: form-data; name="{n}"\r\n\r\n{v}')
+    af("1_$ACTION_REF_1")
+    af("1_$ACTION_1:0", json.dumps({"id": ACTION_ID, "bound": "$@1"}))
+    af("1_$ACTION_1:1", '["$undefined"]')
+    af("1_$ACTION_KEY", ACTION_KEY)
+    af("1_device_fingerprint", fp); af("1_timezone"); af("1_next")
+    af("1_email", email); af("1_password", pwd); af("1_invite_code")
+    af("0", '["$undefined","$K1"]')
+    body = "\r\n".join(parts) + f"\r\n--{bd}--\r\n"
+    headers = {
+        "Content-Type": f"multipart/form-data; boundary={bd}",
+        "Accept": "text/x-component", "Next-Action": NEXT_ACTION,
+        "Next-Router-State-Tree": ROUTER, "Origin": BASE, "Referer": f"{BASE}/login",
+    }
+    return body, headers
 
 SOCKS = {"http": "socks5h://127.0.0.1:9050", "https": "socks5h://127.0.0.1:9050"}
 CONTROL = ("127.0.0.1", 9051)
-NINE_ROUTER_DB = m.NINE_ROUTER_DB
+NINE_ROUTER_DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "th_tor_state.json")
 INJECT = "--no-inject" not in sys.argv
 
@@ -70,20 +96,20 @@ def register_one():
     email = email_data["address"]; email_token = email_data["token"]
     pwd = ''.join(random.choices(string.ascii_letters + string.digits, k=12)) + '!Aa1'
     log(f"Email: {email}")
-    s = requests.Session(); s.headers.update({"User-Agent": m.UA})
+    s = requests.Session(); s.headers.update({"User-Agent": UA})
     try:
-        s.get(f"{m.BASE}/login", proxies=SOCKS, timeout=40)
+        s.get(f"{BASE}/login", proxies=SOCKS, timeout=40)
     except Exception as e:
         log(f"login page: retry via direct...")
         try:
-            s.get(f"{m.BASE}/login", timeout=25)
+            s.get(f"{BASE}/login", timeout=25)
         except Exception:
             pass
-    body, headers = m.make_signup_body(email, pwd)
+    body, headers = make_signup_body(email, pwd)
     r = None
     for attempt in range(3):
         try:
-            r = s.post(f"{m.BASE}/login", data=body, headers=headers, proxies=SOCKS, timeout=50)
+            r = s.post(f"{BASE}/login", data=body, headers=headers, proxies=SOCKS, timeout=50)
             break
         except Exception as e:
             log(f"  signup retry {attempt+1}: {str(e)[:30]}")
@@ -104,14 +130,14 @@ def register_one():
     log(f"  Signup OK - userId: {uid[0] if uid else '?'}")
     # cleanup auto keys (1 akun 1 key)
     try:
-        r2 = s.get(f"{m.BASE}/api/keys", headers={"Accept": "application/json"}, proxies=SOCKS, timeout=30)
+        r2 = s.get(f"{BASE}/api/keys", headers={"Accept": "application/json"}, proxies=SOCKS, timeout=30)
         for k in r2.json().get("keys", []):
             try:
-                s.delete(f"{m.BASE}/api/keys/{k['id']}", proxies=SOCKS, timeout=15)
+                s.delete(f"{BASE}/api/keys/{k['id']}", proxies=SOCKS, timeout=15)
             except: pass
     except: pass
     # create key
-    r3 = s.post(f"{m.BASE}/api/keys", json={"label": f"th-{random.randint(100,999)}"},
+    r3 = s.post(f"{BASE}/api/keys", json={"label": f"th-{random.randint(100,999)}"},
                 headers={"Accept": "application/json", "Content-Type": "application/json"}, proxies=SOCKS, timeout=40)
     if r3.status_code != 201:
         return None, f"key create failed {r3.status_code}"
@@ -120,7 +146,7 @@ def register_one():
         return None, "no plaintext"
     log(f"  Key: {key[:35]}...")
     # consent free models
-    rc = s.post(f"{m.BASE}/api/me/privacy", json={"free_models_enabled": True},
+    rc = s.post(f"{BASE}/api/me/privacy", json={"free_models_enabled": True},
                 headers={"Accept": "application/json", "Content-Type": "application/json"}, proxies=SOCKS, timeout=30)
     consent = rc.status_code == 200 and '"ok":true' in rc.text
     log(f"  Free models: {'Y' if consent else 'N'} ({rc.status_code})")
@@ -155,7 +181,7 @@ def inject_9router(api_key, email):
 
 def test_model(key):
     try:
-        r = requests.post(f"{m.BASE}/v1/chat/completions",
+        r = requests.post(f"{BASE}/v1/chat/completions",
             headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
             timeout=50, json={"model": "mimo-v2.5:free", "messages": [{"role": "user", "content": "say ok"}], "max_tokens": 50})
         return r.status_code == 200, f"{r.status_code}"
