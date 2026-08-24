@@ -20,21 +20,15 @@ NEXT_ACTION = "607ec2c1a962aa81ad67a2483c54b0cfadfda875b2"
 ROUTER = urllib.parse.quote('["",{"children":["login",{"children":["__PAGE__",{},null,null,0]},null,null,0]},null,null,20]')
 SOCKS = {"http": "socks5h://127.0.0.1:9050", "https": "socks5h://127.0.0.1:9050"}
 CONTROL = ("127.0.0.1", 9051)
-NINE_ROUTER_DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+NINE_ROUTER_DB = r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite"
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Supabase anon key — env TH_ANON_KEY atau file supabase_config.json (opsional)
+# Supabase anon key (dari farm lama)
 def _anon():
-    import os as _os
-    k = _os.environ.get("TH_ANON_KEY", "")
-    if k:
-        return k
-    for p in ["supabase_config.json", r"C:\Users\Arsyad\farm-tokenharbor\bot\supabase_config.json"]:
-        try:
-            return json.load(open(p))["anon_key"]
-        except Exception:
-            continue
-    return ""
+    try:
+        return json.load(open(r"C:\Users\Arsyad\farm-tokenharbor\bot\supabase_config.json"))["anon_key"]
+    except Exception:
+        return ""
 
 def log(msg, lv="INFO"):
     print(f"  [{datetime.now().strftime('%H:%M:%S')}] [{lv}] {msg}", flush=True)
@@ -169,7 +163,7 @@ def inject_9router(api_key, email, label=None):
             "providerSpecificData": {"prefix": "th", "apiType": "chat",
                                      "baseUrl": "https://tokenharbor.ai/v1", "nodeName": "tokenharbor"},
             "errorCode": None, "backoffLevel": 0, "lastUsedAt": None, "consecutiveUseCount": 0,
-            "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1
+            "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1, "modelLock_qwen3.8-27b:free": 1
         })
         cur.execute("INSERT INTO providerConnections (id, provider, authType, name, email, priority, isActive, data, createdAt, updatedAt) VALUES (?, 'openai-compatible', 'api_key', ?, ?, 0, 1, ?, ?, ?)",
             (nid, label, email, data, now, now))

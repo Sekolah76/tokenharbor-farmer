@@ -144,7 +144,7 @@ def inject_9router(api_key, email):
             "providerSpecificData": {"prefix": "th", "apiType": "chat",
                                      "baseUrl": "https://tokenharbor.ai/v1", "nodeName": "tokenharbor"},
             "errorCode": None, "backoffLevel": 0, "lastUsedAt": None, "consecutiveUseCount": 0,
-            "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1
+            "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1, "modelLock_qwen3.8-27b:free": 1
         })
         cur.execute("INSERT INTO providerConnections (id, provider, authType, name, email, priority, isActive, data, createdAt, updatedAt) VALUES (?, 'openai-compatible', 'api_key', ?, ?, 0, 1, ?, ?, ?)",
             (nid, label, email, data, now, now))
@@ -175,7 +175,15 @@ def main():
     print(f"=== TOR FARM — target {n}, sudah {len(state['accounts'])} ===", flush=True)
     log(f"Inject 9router: {'ON' if INJECT else 'OFF'}")
     success = 0; fail_count = 0
+    last_progress = time.time()
     while len(state["accounts"]) < n:
+        # smart pause: 10 menit tanpa progress → istirahat 5 menit (redam human-check wave)
+        if time.time() - last_progress > 600 and fail_count > 0:
+            log(f"10 menit tanpa progress ({fail_count} fail) — pause 5 menit...", "WARN")
+            time.sleep(300)
+            newnym()
+            last_progress = time.time()
+            fail_count = 0
         if fail_count >= 5:
             log("5 gagal berturut — rotate circuit", "WARN")
             newnym(); time.sleep(10); fail_count = 0
@@ -201,6 +209,7 @@ def main():
         with open(STATE_FILE, "w") as f:
             json.dump(state, f, indent=2)
         success += 1; fail_count = 0
+        last_progress = time.time()
         v = "Y" if acct["verified"] else "N"; c = "Y" if acct["consent"] else "N"
         print(f"  RESULT: {acct['email']} [v:{v}] [c:{c}] [inj:{'Y' if inj else 'N'}]", flush=True)
         # rotate circuit tiap 2 akun (IP beda utk rate-limit)

@@ -1,6 +1,6 @@
 # 🏭 TokenHarbor Farmer
 
-> **Auto-register akun TokenHarbor + enable free models + inject ke 9Router — bypass IP rate-limit via TOR, verified 80+ akun.**
+> **Auto-register akun TokenHarbor + enable free models + inject ke 9Router — bypass IP rate-limit via TOR, verified 100 akun.**
 
 Tool CLI untuk membuat akun [TokenHarbor](https://tokenharbor.ai) secara massal/otomatis:
 1. **Register** via Next.js Server Action (tembus `signup_ip_required`)
@@ -107,6 +107,9 @@ python th_auto_register.py loop 10
 
 # Tambahkan kv customModels ke 9router (biar model th muncul)
 python inject_th_kv.py
+
+# (Jika model free qwen tidak muncul) tambahkan modelLock ke semua conn th:
+python fix_th_model_locks.py
 ```
 
 ### 6. Verifikasi
@@ -144,7 +147,8 @@ python /path/to/th_auto_register.py single # agent 1 akun
 
 ## 🧪 Hasil Verified (Agt 2026)
 
-- **80+ akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
+- **100 akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
+- **3 model free per akun**: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free` — semua 200 OK (verified langsung + via 9Router)
 - Rate: ~1 akun / 1-3 menit (depend Tor)
 - 100% akun aktif & bisa dipakai via 9Router (`th/deepseek-v4-flash:free` = 200 OK)
 - Grace period free tier: **7 hari per akun** sejak enable — farm massal = stock berlapis
@@ -156,8 +160,9 @@ python /path/to/th_auto_register.py single # agent 1 akun
 ```
 tokenharbor-farmer/
 ├── th_tor_farm.py          # Farm massal (resume, auto-rotate, inject)
-├── th_auto_register.py     # CLI: single / loop register→logout / single
+├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router
+├── fix_th_model_locks.py   # Tambah modelLock free (qwen dll) ke semua conn th
 ├── STEPBYSTEP.md           # Full technical workflow (endpoints, action IDs, error handling)
 ├── README.md               # Ini
 └── .gitignore              # Exclude state, keys, env
