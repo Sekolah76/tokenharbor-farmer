@@ -18,6 +18,7 @@ Tool CLI untuk membuat akun [TokenHarbor](https://tokenharbor.ai) secara massal/
 
 | Fitur | Status |
 |---|---|
+| **Rich TUI menu (klik 1/2/3 visual)** | ✅ |
 | Auto-register (Next.js Server Action) | ✅ |
 | TOR IP rotation (bypass rate-limit) | ✅ |
 | Verify email otomatis | ✅ |
@@ -93,6 +94,10 @@ export TH_ANON_KEY="..."                                  # Supabase anon (untuk
 
 ### 5. Jalankan
 ```bash
+# 🎨 MODE VISUAL (rekomendasi) — menu klik-klik 1/2/3:
+python th_tui.py
+
+# ⚙️ Mode CLI langsung:
 # Register 1 akun (cek alur)
 python th_auto_register.py single
 
@@ -163,6 +168,7 @@ python /path/to/th_auto_register.py single # agent 1 akun
 
 ```
 tokenharbor-farmer/
+├── th_tui.py               # 🎨 Rich TUI menu (klik 1/2/3 visual)
 ├── th_tor_farm.py          # Farm massal (resume, auto-rotate, inject)
 ├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router
