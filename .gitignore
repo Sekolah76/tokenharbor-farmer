@@ -7,4 +7,6 @@ accounts.json
 apikeys.txt
 .env
 supabase_config.json
+th_accounts.json
 *.log
+state.json
