@@ -87,6 +87,12 @@ python th_tui.py
 ## ⚙️ Mode CLI (tanpa TUI)
 
 ```bash
+# 🚀 Farm PARALEL (multi-Tor) — rekomendasi utk cepat:
+python th_farm_multi.py                 # 10 akun default, 3 Tor
+python th_farm_multi.py 100             # 100 akun
+python th_farm_multi.py 50 --tors 5     # 50 akun, 5 Tor (5x speed)
+python th_farm_multi.py 25 --no-inject  # tanpa inject
+
 python th_auto_register.py single           # 1 akun
 python th_auto_register.py loop 5           # loop register→logout 5x
 python th_tor_farm.py 100                   # farm 100 akun (resume)
