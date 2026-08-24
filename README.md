@@ -97,6 +97,32 @@ export TH_ANON_KEY="..."                                  # Supabase anon (untuk
 # 🎨 MODE VISUAL (rekomendasi) — menu klik-klik 1/2/3:
 python th_tui.py
 
+# ✅ Cek kesiapan sebelum farm (deteksi error lebih awal):
+python th_preflight.py
+```
+
+**📟 Tampilan TUI (klik-klik pilih menu):**
+```
+🔥 Tor (9050): ✅ READY
+📦 Akun tersimpan: 100
+
+┌──────┬──────────────────────┬──────────────────────────────────────────┐
+│ No   │ Aksi                 │ Keterangan                               │
+╞══════╪══════════════════════╪══════════════════════════════════════════╡
+│ 1    │ Register 1 akun      │ Signup + verify + consent + key + inject │
+│ 2    │ Batch Farm (N)       │ Farm massal + auto inject + resume       │
+│ 3    │ Loop register→logout │ Register, logout, ulang (N kali)         │
+│ 4    │ Test API key         │ Test key terhadap model free             │
+│ 5    │ Enable Free Models   │ Enable free models utk akun existing     │
+│ 6    │ List Akun            │ Lihat akun tersimpan                     │
+│ 7    │ Status 9Router       │ Cek conn th + model free                 │
+│ 0    │ Exit                 │ Keluar                                   │
+└──────┴──────────────────────┴──────────────────────────────────────────┘
+Pilih menu [0/1/2/3/4/5/6/7] (1): _
+```
+
+**📈 Workflow lengkap** (persiapan → preflight → farm → hasil): lihat [`WORKFLOW.md`](WORKFLOW.md)
+
 # ⚙️ Mode CLI langsung:
 # Register 1 akun (cek alur)
 python th_auto_register.py single
@@ -169,11 +195,14 @@ python /path/to/th_auto_register.py single # agent 1 akun
 ```
 tokenharbor-farmer/
 ├── th_tui.py               # 🎨 Rich TUI menu (klik 1/2/3 visual)
+├── th_preflight.py         # ✅ Pre-flight check (deps, Tor, DB, state)
 ├── th_tor_farm.py          # Farm massal (resume, auto-rotate, inject)
 ├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router
 ├── fix_th_model_locks.py   # Tambah modelLock free (qwen dll) ke semua conn th
 ├── fix_th_provider.py      # Fix provider conn (gabung ke node TokenHarbor yg benar)
+├── WORKFLOW.md             # 📈 Alur kerja lengkap (visual)
+├── TUI-PREVIEW.txt         # 📟 Preview tampilan menu
 ├── STEPBYSTEP.md           # Full technical workflow (endpoints, action IDs, error handling)
 ├── README.md               # Ini
 └── .gitignore              # Exclude state, keys, env

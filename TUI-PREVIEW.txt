@@ -1,0 +1,24 @@
+                               TOKENHARBOR FARMER                               
+                  Auto Register • Free Models • 9Router Inject                  
+                      Tor IP rotation • Verified 100+ akun                      
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 💡 Status Tools                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+  🔥 Tor (9050): ✅ READY
+  📦 Akun tersimpan: 100
+
+                                 📋 MENU                                  
+╔══════╤══════════════════════╤══════════════════════════════════════════╗
+║ No   │ Aksi                 │ Keterangan                               ║
+╟──────┼──────────────────────┼──────────────────────────────────────────╢
+║ 1    │ Register 1 akun      │ Signup + verify + consent + key + inject ║
+║ 2    │ Batch Farm (N)       │ Farm massal + auto inject + resume       ║
+║ 3    │ Loop register→logout │ Register, logout, ulang (N kali)         ║
+║ 4    │ Test API key         │ Test key terhadap model free             ║
+║ 5    │ Enable Free Models   │ Enable free models utk akun existing     ║
+║ 6    │ List Akun            │ Lihat akun tersimpan                     ║
+║ 7    │ Status 9Router       │ Cek conn th + model free                 ║
+║ 0    │ Exit                 │ Keluar                                   ║
+╚══════╧══════════════════════╧══════════════════════════════════════════╝
+Pilih menu [0/1/2/3/4/5/6/7] (1): 
