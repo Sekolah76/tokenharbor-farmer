@@ -19,6 +19,7 @@ Tool CLI untuk membuat akun [TokenHarbor](https://tokenharbor.ai) secara massal/
 | Fitur | Status |
 |---|---|
 | **Rich TUI menu (klik 1/2/3 visual)** | ✅ |
+| **Farm PARALEL (multi-Tor, speed 2-8x)** | ✅ |
 | Auto-register (Next.js Server Action) | ✅ |
 | TOR IP rotation (bypass rate-limit) | ✅ |
 | Verify email otomatis | ✅ |
@@ -127,6 +128,12 @@ Pilih menu [0/1/2/3/4/5/6/7] (1): _
 # Register 1 akun (cek alur)
 python th_auto_register.py single
 
+# 🚀 Farm PARALEL (multi-Tor) — cepat, default 10 akun:
+python th_farm_multi.py                 # 10 akun, 3 Tor
+python th_farm_multi.py 100             # 100 akun
+python th_farm_multi.py 50 --tors 5     # 50 akun, 5 Tor paralel (5x speed)
+python th_farm_multi.py 25 --no-inject  # tanpa inject
+
 # Farm 100 akun (auto-inject 9router, resume-able)
 python th_tor_farm.py 100
 
@@ -200,7 +207,8 @@ tokenharbor-farmer/
 ├── th_tui.py               # 🎨 Rich TUI menu (klik 1/2/3 visual)
 ├── th_preflight.py         # ✅ Pre-flight check (deps, Tor, DB, state)
 ├── th_export.py            # 📤 Export akun → accounts_full.txt + api_keys.txt
-├── th_tor_farm.py          # Farm massal (resume, auto-rotate, inject)
+├── th_farm_multi.py        # 🚀 Farm PARALEL (multi-Tor, default 10, --tors N)
+├── th_tor_farm.py          # Farm massal single-Tor (resume, auto-rotate, inject)
 ├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router
 ├── fix_th_model_locks.py   # Tambah modelLock free (qwen dll) ke semua conn th
