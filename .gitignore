@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.jsonl
+th_tor_state.json
+th_auto_results.jsonl
+accounts.json
+apikeys.txt
+.env
+supabase_config.json
+*.log
