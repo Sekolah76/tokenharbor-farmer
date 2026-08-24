@@ -6,8 +6,9 @@ Conn lama: provider='openai-compatible-chat-52f0bc28-abb2-4d13-8bdb-b7c8d448dc90
 Conn baru (salah): provider='openai-compatible', authType='api_key'
 """
 import sqlite3
+import os
 
-DB = r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite"
+DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
 TARGET_PROVIDER = "openai-compatible-chat-52f0bc28-abb2-4d13-8bdb-b7c8d448dc90"
 
 c = sqlite3.connect(DB)
