@@ -110,6 +110,9 @@ python inject_th_kv.py
 
 # (Jika model free qwen tidak muncul) tambahkan modelLock ke semua conn th:
 python fix_th_model_locks.py
+
+# (Jika conn baru tidak muncul di UI 9router — provider beda) fix provider:
+python fix_th_provider.py
 ```
 
 ### 6. Verifikasi
@@ -149,6 +152,7 @@ python /path/to/th_auto_register.py single # agent 1 akun
 
 - **100 akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
 - **3 model free per akun**: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free` — semua 200 OK (verified langsung + via 9Router)
+- **9Router: 205 conn th aktif** (111 key lama + 100 farm baru) — semua di node `TokenHarbor` yang sama, aktif & dipakai
 - Rate: ~1 akun / 1-3 menit (depend Tor)
 - 100% akun aktif & bisa dipakai via 9Router (`th/deepseek-v4-flash:free` = 200 OK)
 - Grace period free tier: **7 hari per akun** sejak enable — farm massal = stock berlapis
@@ -163,6 +167,7 @@ tokenharbor-farmer/
 ├── th_auto_register.py     # CLI: single / loop register→logout
 ├── inject_th_kv.py         # Inject kv customModels ke 9Router
 ├── fix_th_model_locks.py   # Tambah modelLock free (qwen dll) ke semua conn th
+├── fix_th_provider.py      # Fix provider conn (gabung ke node TokenHarbor yg benar)
 ├── STEPBYSTEP.md           # Full technical workflow (endpoints, action IDs, error handling)
 ├── README.md               # Ini
 └── .gitignore              # Exclude state, keys, env
