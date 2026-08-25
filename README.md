@@ -118,7 +118,15 @@ export NINE_ROUTER_DB="/path/ke/9router/data.sqlite"
 #   3. Atau: cek settings/config 9router → path data
 ```
 
-**C. Bagaimana inject bekerja (transparan):**
+**C. Manual override (opsional — kalau 9router kamu butuh konfigurasi khusus):**
+```bash
+# Default sudah benar (auto-detect + tokenharbor.ai/v1). Override HANYA kalau perlu:
+export TH_PROVIDER="openai-compatible-chat-xxxx"   # paksa pakai node provider tertentu
+export TH_BASE_URL="https://tokenharbor.ai/v1"     # ganti base URL kalau beda
+export TH_PREFIX="th"                               # ganti prefix model kalau beda
+```
+
+**D. Bagaimana inject bekerja (transparan):**
 ```bash
 # 1. Setiap akun sukses → 1 conn baru dibuat di DB 9router kamu
 # 2. Kalau 9router kamu SUDAH punya node TokenHarbor → key GABUNG ke node itu
@@ -127,7 +135,7 @@ export NINE_ROUTER_DB="/path/ke/9router/data.sqlite"
 # 5. Model free (mimo/deepseek/qwen) di-lock otomatis ke tiap conn
 ```
 
-**D. Verifikasi inject sukses:**
+**E. Verifikasi inject sukses:**
 ```bash
 # Cek jumlah conn TokenHarbor di 9router kamu:
 python -c "import sqlite3,db_path; c=sqlite3.connect(db_path.find_9router_db()); print('conn tokenharbor:', c.execute(\"SELECT COUNT(*) FROM providerConnections WHERE data LIKE '%tokenharbor.ai%'\").fetchone()[0])"

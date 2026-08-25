@@ -204,10 +204,14 @@ def register_one(socks_port, ctrl_port, stats, lock, state, exist):
 
 def _resolve_provider(conn):
     """Auto-detect node provider dari DB 9router user (bukan hardcode).
-    1. Cari conn tokenharbor existing → pakai provider-nya (gabung node sama).
-    2. Kalau belum ada → buat node baru dengan provider id baru (uuid).
+    1. env TH_PROVIDER (manual override) → pakai itu.
+    2. Cari conn tokenharbor existing → pakai provider-nya (gabung node sama).
+    3. Kalau belum ada → buat node baru dengan provider id baru (uuid).
     """
     import uuid as _uuid
+    override = os.environ.get("TH_PROVIDER", "").strip()
+    if override:
+        return override
     try:
         rows = conn.execute(
             "SELECT provider FROM providerConnections WHERE data LIKE '%tokenharbor.ai%' LIMIT 1"
@@ -227,11 +231,14 @@ def inject_9router(api_key, email):
         now = datetime.now(timezone.utc).isoformat()
         count = cur.execute("SELECT COUNT(*) FROM providerConnections WHERE data LIKE '%tokenharbor.ai%'").fetchone()[0]
         label = f"TH th{count+1}"
+        # baseUrl bisa di-override via env (manual) — default tokenharbor.ai/v1
+        base_url = os.environ.get("TH_BASE_URL", "https://tokenharbor.ai/v1").strip()
+        prefix = os.environ.get("TH_PREFIX", "th").strip()
         data = json.dumps({
             "apiKey": api_key, "label": label, "defaultModel": "deepseek-v4-flash",
             "testStatus": "active",
-            "providerSpecificData": {"prefix": "th", "apiType": "chat",
-                                     "baseUrl": "https://tokenharbor.ai/v1", "nodeName": "tokenharbor"},
+            "providerSpecificData": {"prefix": prefix, "apiType": "chat",
+                                     "baseUrl": base_url, "nodeName": "tokenharbor"},
             "errorCode": None, "backoffLevel": 0, "lastUsedAt": None, "consecutiveUseCount": 0,
             "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1, "modelLock_qwen3.8-27b:free": 1
         })
