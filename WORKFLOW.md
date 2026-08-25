@@ -127,7 +127,7 @@ python fix_th_provider.py                   # fix provider gabung node
 ## 🧪 Verified (Agt 2026)
 
 ```
-✅ 100 akun — semua verified + consent + key 200 + inject 9Router
+✅ N akun — semua verified + consent + key 200 + inject 9Router
 ✅ N conn th di 9Router (auto-gabung node)
 ✅ 3 model free per akun = 200 OK
 ✅ Resume crash, auto-rotate, smart-pause (anti wave flag)
