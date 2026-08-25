@@ -120,7 +120,7 @@ python fix_th_provider.py                   # fix provider gabung node
 - **IP bypass**: TOR exit node + NEWNYM rotation (unlimited IP, gratis)
 - **Free models**: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free`
 - **Verify**: temp mail poll `api.tempmail.lol` → klik link verify
-- **Inject**: conn `TH thN` provider `openai-compatible-chat-52f0bc28...` (gabung node)
+- **Inject**: conn `TH thN` — provider auto-detect dari DB 9router (gabung node existing)
 
 ---
 
@@ -128,7 +128,7 @@ python fix_th_provider.py                   # fix provider gabung node
 
 ```
 ✅ 100 akun — semua verified + consent + key 200 + inject 9Router
-✅ 205 conn th di 9Router (111 lama + 100 baru)
+✅ N conn th di 9Router (auto-gabung node)
 ✅ 3 model free per akun = 200 OK
 ✅ Resume crash, auto-rotate, smart-pause (anti wave flag)
 ```

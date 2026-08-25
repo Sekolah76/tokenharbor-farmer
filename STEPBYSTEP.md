@@ -1,6 +1,6 @@
 # TOKENHARBOR FARMING — Step-by-Step (verified Agt 2026)
 
-## Status: 110+ akun (verified penuh via TOR)
+## Status: verified penuh via TOR (jumlah akun sesuai hasil farm kamu)
 
 ---
 
@@ -94,7 +94,7 @@ data: {apiKey, defaultModel:"deepseek-v4-flash", testStatus:"active",
          baseUrl:"https://tokenharbor.ai/v1", nodeName:"tokenharbor"},
        modelLock_mimo-v2.5:free:1, modelLock_deepseek-v4-flash:free:1}
 ```
-- TIDAK hapus/disable conn lama (105 + baru = gabung)
+- TIDAK hapus/disable conn lama — farm baru GABUNG ke node existing
 - 1 akun = 1 conn
 
 ### 10. Rotasi circuit (IP baru)
@@ -104,9 +104,9 @@ socket → 127.0.0.1:9051 → "AUTHENTICATE\r\n" → "SIGNAL NEWNYM\r\n"
 - Tiap 2 akun sukses + saat exit node buruk
 
 ## ⚙️ Tools yang dipakai
-- **Tor**: `C:\Users\Arsyad\.local\tor\tor\tor.exe -f C:\Users\Arsyad\.local\tor\torrc`
+- **Tor**: download tor-expert-bundle → `tor -f torrc` (torrc: SocksPort 9050, ControlPort 9051)
   (SocksPort 9050, ControlPort 9051, CookieAuthentication 0)
-- **9router DB**: `C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite`
+- **9router DB**: path otomatis via `db_path.py` (env `NINE_ROUTER_DB` kalau lokasi beda)
 - **Script farm**: `th-farm/th_tor_farm.py` (loop + retry + inject otomatis)
 - **State**: `th-farm/th_tor_state.json`
 
@@ -116,8 +116,8 @@ socket → 127.0.0.1:9051 → "AUTHENTICATE\r\n" → "SIGNAL NEWNYM\r\n"
 - IP rumah/WebShare/WARP/Daytona = SEMUA burn (jangan dipakai)
 
 ## 📊 Hasil (final Agt 2026)
-- 110+ akun verified (email + consent + key 200 + inject 9Router)
-- 215+ conn th aktif di 9Router (111 lama + 110 farm)
+- N akun verified (email + consent + key 200 + inject 9Router)
+- N conn th aktif di 9Router (auto-gabung ke node TokenHarbor)
 - 3 model free per akun: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free` — semua 200
 - Rate: ~1 akun/1-3 menit (Tor), resume-able dari state JSON
 

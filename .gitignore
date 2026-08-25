@@ -12,3 +12,6 @@ th_accounts.json
 state.json
 accounts_full.txt
 api_keys.txt
+test_9router.sqlite
+.tor*/
+*.sqlite

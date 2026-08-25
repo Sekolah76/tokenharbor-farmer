@@ -1,22 +1,35 @@
 #!/usr/bin/env python3
-"""fix_th_provider.py — Fix provider conn th baru (TH th106+) agar GABUNG ke node
-TokenHarbor yang benar (provider id unik yg dipakai conn lama).
+"""fix_th_provider.py — Fix provider conn th yang salah ('openai-compatible')
+agar GABUNG ke node TokenHarbor yang benar (auto-detect dari DB).
 
-Conn lama: provider='openai-compatible-chat-52f0bc28-abb2-4d13-8bdb-b7c8d448dc90', authType='apikey'
-Conn baru (salah): provider='openai-compatible', authType='api_key'
+Auto-detect: ambil provider id dari conn tokenharbor existing yang benar.
+Kalau tidak ada conn existing → buat node baru dengan id unik (uuid).
 """
 import sqlite3
 import os
+import uuid
 
-DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
-TARGET_PROVIDER = "openai-compatible-chat-52f0bc28-abb2-4d13-8bdb-b7c8d448dc90"
+DB = os.environ.get("NINE_ROUTER_DB", None)
+if not DB:
+    # fallback generic: cari DB 9router secara lokal (default lokasi umum)
+    for cand in [
+        os.path.expanduser("~/AppData/Roaming/9router/db/data.sqlite"),
+        "/app/data/data.sqlite",
+        os.path.expanduser("~/.9router/data.sqlite"),
+    ]:
+        if os.path.exists(cand):
+            DB = cand
+            break
+    else:
+        DB = os.path.expanduser("~/AppData/Roaming/9router/db/data.sqlite")
 
 c = sqlite3.connect(DB)
-# ambil provider lama dari 1 conn lama
+# ambil provider lama dari 1 conn lama (yang bukan 'openai-compatible')
 old = c.execute("SELECT DISTINCT provider, authType FROM providerConnections WHERE data LIKE '%tokenharbor.ai%' AND provider != 'openai-compatible' LIMIT 1").fetchone()
 if old:
     TARGET_PROVIDER, TARGET_AUTH = old
 else:
+    TARGET_PROVIDER = "openai-compatible-chat-" + str(uuid.uuid4())
     TARGET_AUTH = "apikey"
 print(f"Target provider: {TARGET_PROVIDER} | authType: {TARGET_AUTH}")
 

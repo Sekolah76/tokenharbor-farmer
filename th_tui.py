@@ -135,8 +135,8 @@ def _list_accounts():
     input("\n[dim]Tekan Enter utk lanjut...[/dim]")
 
 def _status_9router():
-    import sqlite3
-    db = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+    import sqlite3, db_path
+    db = db_path.find_9router_db()
     try:
         c = sqlite3.connect(db)
         n = c.execute("SELECT COUNT(*) FROM providerConnections WHERE data LIKE '%tokenharbor.ai%' AND isActive=1").fetchone()[0]

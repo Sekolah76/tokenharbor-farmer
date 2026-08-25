@@ -40,7 +40,8 @@ def make_signup_body(email, pwd):
 
 SOCKS = {"http": "socks5h://127.0.0.1:9050", "https": "socks5h://127.0.0.1:9050"}
 CONTROL = ("127.0.0.1", 9051)
-NINE_ROUTER_DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+import db_path as _dbp
+NINE_ROUTER_DB = _dbp.find_9router_db()
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "th_tor_state.json")
 INJECT = "--no-inject" not in sys.argv
 

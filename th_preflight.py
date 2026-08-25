@@ -3,7 +3,7 @@
 Cek: Python deps, Tor (9050+9051), env DB, state validity, 9router reachable.
 Exit 0 = OK siap farm, exit 1 = ada masalah (tampilkan fix).
 """
-import os, sys, json, socket, sqlite3
+import os, sys, json, socket, sqlite3, db_path
 
 def check(ok, msg, fix=""):
     tag = "✅" if ok else "❌"
@@ -32,7 +32,9 @@ def main():
     print("[2] Tor")
     def _port_open(p):
         try:
-            s = socket.create_connection(("127.0.0.1", p), timeout=3); s.close(); return True
+            s = socket.create_connection(("127.0.0.1", p), timeout=3)
+            s.close()
+            return True
         except Exception:
             return False
     socks = _port_open(9050)
@@ -57,7 +59,7 @@ def main():
 
     # 4. 9Router DB
     print("[4] 9Router DB")
-    db = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+    db = db_path.find_9router_db()
     if os.path.exists(db):
         try:
             c = sqlite3.connect(db)

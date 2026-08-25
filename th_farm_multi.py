@@ -17,7 +17,8 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOR_DIR = os.environ.get("TOR_DIR", os.path.expanduser("~/.local/tor/tor"))
-NINE_ROUTER_DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+import db_path as _dbp
+NINE_ROUTER_DB = _dbp.find_9router_db()
 STATE_FILE = os.path.join(HERE, "th_tor_state.json")
 INJECT = "--no-inject" not in sys.argv
 
@@ -154,11 +155,12 @@ def register_one(socks_port, ctrl_port, stats, lock, state, exist):
         except Exception:
             time.sleep(5)
     if r is None or "signedIn" not in r.text:
-        errs = [e for e in re.findall(r'"error":"([^"]+)"', getattr(r, "text", "") or "") if e not in ("$f", "$undefined")]
-        err = errs[0] if errs else "net"
-        if "couldn't create" in err.lower() or "human check" in err.lower():
-            newnym_ctrl(ctrl_port)
-        return
+            errs = [e for e in re.findall(r'"error":"([^"]+)"', getattr(r, "text", "") or "") if e not in ("$f", "$undefined")]
+            err = errs[0] if errs else "net"
+            print(f"  [tor:{socks_port}] signup fail: {err[:60]}", flush=True)
+            if "couldn't create" in err.lower() or "human check" in err.lower():
+                newnym_ctrl(ctrl_port)
+            return
     uid = re.findall(r'"userId":\s*"([^"]+)"', r.text)
     # cleanup auto keys
     try:
@@ -200,9 +202,27 @@ def register_one(socks_port, ctrl_port, stats, lock, state, exist):
     # rotate
     newnym_ctrl(ctrl_port)
 
+def _resolve_provider(conn):
+    """Auto-detect node provider dari DB 9router user (bukan hardcode).
+    1. Cari conn tokenharbor existing → pakai provider-nya (gabung node sama).
+    2. Kalau belum ada → buat node baru dengan provider id baru (uuid).
+    """
+    import uuid as _uuid
+    try:
+        rows = conn.execute(
+            "SELECT provider FROM providerConnections WHERE data LIKE '%tokenharbor.ai%' LIMIT 1"
+        ).fetchall()
+        if rows and rows[0][0]:
+            return rows[0][0]
+    except Exception:
+        pass
+    # node baru: provider id unik milik user ini
+    return "openai-compatible-chat-" + str(_uuid.uuid4())
+
 def inject_9router(api_key, email):
     try:
         conn = sqlite3.connect(NINE_ROUTER_DB); cur = conn.cursor()
+        provider = _resolve_provider(cur)
         nid = 'conn-' + str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         count = cur.execute("SELECT COUNT(*) FROM providerConnections WHERE data LIKE '%tokenharbor.ai%'").fetchone()[0]
@@ -215,8 +235,8 @@ def inject_9router(api_key, email):
             "errorCode": None, "backoffLevel": 0, "lastUsedAt": None, "consecutiveUseCount": 0,
             "modelLock_mimo-v2.5:free": 1, "modelLock_deepseek-v4-flash:free": 1, "modelLock_qwen3.8-27b:free": 1
         })
-        cur.execute("INSERT INTO providerConnections (id, provider, authType, name, email, priority, isActive, data, createdAt, updatedAt) VALUES (?, 'openai-compatible-chat-52f0bc28-abb2-4d13-8bdb-b7c8d448dc90', 'apikey', ?, ?, 0, 1, ?, ?, ?)",
-            (nid, label, email, data, now, now))
+        cur.execute("INSERT INTO providerConnections (id, provider, authType, name, email, priority, isActive, data, createdAt, updatedAt) VALUES (?, ?, 'apikey', ?, ?, 0, 1, ?, ?, ?)",
+            (nid, provider, label, email, data, now, now))
         conn.commit(); conn.close()
         return True, label
     except Exception as e:

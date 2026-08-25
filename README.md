@@ -8,7 +8,7 @@ Tool CLI untuk membuat akun [TokenHarbor](https://tokenharbor.ai) secara massal/
 3. **Enable free models** (klik consent `free_models_enabled`)
 4. **Buat API key** — 1 akun = 1 key (auto-cleanup key bawaan)
 5. **Test key** — call `mimo-v2.5:free`
-6. **Inject ke 9Router** — conn baru, GABUNG (tidak hapus key lama)
+6. **Inject ke 9Router** — conn baru GABUNG ke node existing (tidak hapus key lama)
 
 **Bypass "Too many sign-ups from this network"** dengan **TOR exit node rotation** (gratis, unlimited IP — NEWNYM per circuit).
 
@@ -87,10 +87,51 @@ EOF
 tor -f ~/tor/torrc
 ```
 
-### 4. Konfigurasi (opsional)
+### 4. Setup 9Router Injection (PENTING — biar key masuk ke 9router KAMU)
+
+Setiap key yang di-farm otomatis di-inject ke 9router **kamu sendiri** (bukan orang lain).
+Cara kerjanya: script **auto-detect** path DB 9router; kalau tidak ketemu → set manual.
+
+**A. Auto-detect (tanpa setup — direkomendasikan):**
 ```bash
-export NINE_ROUTER_DB="C:/path/ke/9router/data.sqlite"   # wajib kalau mau inject
-export TH_ANON_KEY="..."                                  # Supabase anon (untuk logout)
+# Script mencari DB 9router di lokasi umum secara otomatis:
+#   Windows: ~/AppData/Roaming/9router/db/data.sqlite
+#   Linux/macOS: ~/.9router/db/data.sqlite
+#   Docker: /app/data/data.sqlite
+python db_path.py    # → tampilkan path DB yang terdeteksi
+```
+
+**B. Set manual (kalau 9router kamu di lokasi beda):**
+```bash
+# Windows (CMD):
+set NINE_ROUTER_DB=C:\path\ke\9router\db\data.sqlite
+
+# Windows (PowerShell):
+$env:NINE_ROUTER_DB="C:\path\ke\9router\db\data.sqlite"
+
+# Linux/macOS:
+export NINE_ROUTER_DB="/path/ke/9router/data.sqlite"
+
+# Cara cari path DB 9router kamu:
+#   1. Buka folder instalasi 9router
+#   2. Cari file "data.sqlite" di folder db/ atau data/
+#   3. Atau: cek settings/config 9router → path data
+```
+
+**C. Bagaimana inject bekerja (transparan):**
+```bash
+# 1. Setiap akun sukses → 1 conn baru dibuat di DB 9router kamu
+# 2. Kalau 9router kamu SUDAH punya node TokenHarbor → key GABUNG ke node itu
+# 3. Kalau BELUM ada node → dibuat node baru (provider id unik milik kamu)
+# 4. Tidak ada key/conn yang dihapus — hanya MENAMBAH
+# 5. Model free (mimo/deepseek/qwen) di-lock otomatis ke tiap conn
+```
+
+**D. Verifikasi inject sukses:**
+```bash
+# Cek jumlah conn TokenHarbor di 9router kamu:
+python -c "import sqlite3,db_path; c=sqlite3.connect(db_path.find_9router_db()); print('conn tokenharbor:', c.execute(\"SELECT COUNT(*) FROM providerConnections WHERE data LIKE '%tokenharbor.ai%'\").fetchone()[0])"
+# Lalu di UI 9router: refresh → lihat node TokenHarbor bertambah
 ```
 
 ### 5. Jalankan
@@ -193,7 +234,7 @@ python /path/to/th_auto_register.py single # agent 1 akun
 
 - **100 akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
 - **3 model free per akun**: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free` — semua 200 OK (verified langsung + via 9Router)
-- **9Router: 205 conn th aktif** (111 key lama + 100 farm baru) — semua di node `TokenHarbor` yang sama, aktif & dipakai
+- **9Router: N conn th aktif** — semua key auto-gabung ke node `TokenHarbor` yang sama, aktif & dipakai
 - Rate: ~1 akun / 1-3 menit (depend Tor)
 - 100% akun aktif & bisa dipakai via 9Router (`th/deepseek-v4-flash:free` = 200 OK)
 - Grace period free tier: **7 hari per akun** sejak enable — farm massal = stock berlapis

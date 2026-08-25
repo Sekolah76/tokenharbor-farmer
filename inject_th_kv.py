@@ -3,9 +3,9 @@
 Model: mimo-v2.5:free, deepseek-v4-flash:free (free tier TH).
 1 akun = 1 conn = 1 key; node id diambil dari DB.
 """
-import sqlite3, json, sys, os
+import sqlite3, json, sys, os, db_path
 
-DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+DB = db_path.find_9router_db()
 PREFIX = "tokenbor"
 MODELS = ["mimo-v2.5:free", "deepseek-v4-flash:free", "qwen3.8-27b:free"]
 

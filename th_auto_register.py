@@ -20,7 +20,8 @@ NEXT_ACTION = "607ec2c1a962aa81ad67a2483c54b0cfadfda875b2"
 ROUTER = urllib.parse.quote('["",{"children":["login",{"children":["__PAGE__",{},null,null,0]},null,null,0]},null,null,20]')
 SOCKS = {"http": "socks5h://127.0.0.1:9050", "https": "socks5h://127.0.0.1:9050"}
 CONTROL = ("127.0.0.1", 9051)
-NINE_ROUTER_DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+import db_path
+NINE_ROUTER_DB = db_path.find_9router_db()
 DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Supabase anon key — env TH_ANON_KEY atau file supabase_config.json (opsional)

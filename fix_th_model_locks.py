@@ -2,9 +2,9 @@
 """fix_th_model_locks.py — Tambah modelLock qwen3.8-27b:free ke SEMUA conn th baru (TH th106+).
 Juga pastikan modelLock mimo + deepseek ada. Pakai buat qwen free muncul di 9router.
 """
-import sqlite3, json, os
+import sqlite3, json, os, db_path
 
-DB = os.environ.get("NINE_ROUTER_DB", r"C:\Users\Arsyad\AppData\Roaming\9router\db\data.sqlite")
+DB = db_path.find_9router_db()
 FREE_MODELS = ["mimo-v2.5:free", "deepseek-v4-flash:free", "qwen3.8-27b:free"]
 
 c = sqlite3.connect(DB)
