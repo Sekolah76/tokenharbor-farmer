@@ -240,7 +240,10 @@ python /path/to/th_auto_register.py single # agent 1 akun
 
 ## 🧪 Hasil Verified (Agt 2026)
 
-- **100 akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
+> **Repo ini sudah DIUJI NYATA** — bukan klaim kosong:
+
+- **100+ akun** berhasil dibuat — SEMUA: verified email ✅, free models enabled ✅, key test 200 ✅, inject 9Router ✅
+- **Test clone fresh**: 6 akun dari `git clone` → farm → inject ke 9Router asli → semua aktif (key 200) ✅
 - **3 model free per akun**: `mimo-v2.5:free`, `deepseek-v4-flash:free`, `qwen3.8-27b:free` — semua 200 OK (verified langsung + via 9Router)
 - **9Router: N conn th aktif** — semua key auto-gabung ke node `TokenHarbor` yang sama, aktif & dipakai
 - Rate: ~1 akun / 1-3 menit (depend Tor)
