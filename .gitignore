@@ -12,6 +12,36 @@ th_accounts.json
 state.json
 accounts_full.txt
 api_keys.txt
+th_keys.txt
 test_9router.sqlite
 .tor*/
 *.sqlite
+node_state.json
+yyds_bad_domains.json
+
+# Cloudflare worker 构建产物
+cf-mail/node_modules/
+cf-mail/.wrangler/
+cf-mail/.dev.vars
+cf-mail/env.sh
+river/runs/
+river/results.jsonl
+river/__pycache__/
+
+# sub2api (ss2a.top) 凭据与令牌缓存 —— 绝不入库
+.ss2a_creds.json
+.ss2a_creds.json.tmp
+
+# 账号密钥 / 导入包 / 代理清单 / 运行快照 —— 绝不入库
+th_keys_*.txt
+th_keys_*.json
+sub2api-tokenhour*.json
+sub2api_import_*.json
+sub2api-account-*.json
+proxyscrape_config.json
+*_run_result.json
+tokenhour_proxy_audit_*.json
+proxies/
+runs/
+cf-mail/env.sh.bak*
+cf-mail/worker.js.bak*

@@ -1,0 +1,16 @@
+name = "cf-mail"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Email Routing 绑定：先在 Cloudflare 控制台
+#   Email → Email Routing → Settings → 启用 Email Workers
+# 然后把 Catch-all 规则指向这个 Worker。
+# wrangler 部署后会自动出现这个绑定（部分账号需要在控制台确认一次）。
+
+# 存储邮件用
+[[kv_namespaces]]
+binding = "MAIL"
+id = "<把 wrangler kv namespace create MAIL 输出的 id 填这里>"
+
+# 读信口令（脚本侧用同一个）
+# 用 `wrangler secret put MAIL_TOKEN` 设置，不要写在文件里

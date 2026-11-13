@@ -63,7 +63,7 @@ DELETE /api/keys/{id}  → hapus SEMUA yang auto-created
 ### 5. Create API key
 ```
 POST /api/keys {"label": "th-XXX"}
-→ 201 {"plaintext": "thk_live_..."}   ← simpan key
+→ 201 {"plaintext": "thk_live_xxxxxxxxxxxxxxxx"}   ← simpan key
 ```
 
 ### 6. Enable free models (WAJIB — klik tombol)
